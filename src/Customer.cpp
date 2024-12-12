@@ -29,8 +29,8 @@ Customer::Customer(std::string input_name, std::string input_surname, std::strin
     this->set_postal_code(input_postal_code);
     this->set_phone_number(input_phone_number);
     this->set_mail(input_mail);
-    this->login = input_login;
-    this->password = input_password;
+    this->set_login(input_login);
+    this->set_password(input_password);
 }
 
 Customer::~Customer()
@@ -85,6 +85,16 @@ void Customer::set_mail(std::string input_mail)
     this->mail=input_mail;
 }
 
+void Customer::set_login(std::string input_login)
+{
+    this->login = input_login;
+}
+
+void Customer::set_password(std::string input_password)
+{
+    this->password = input_password;
+}
+
 std::string Customer::get_name()
 {
     return this->name;
@@ -137,12 +147,65 @@ std::vector<Account*> Customer::get_accounts()
 
 void Customer::open_account()
 {
-    this->accounts.push_back(new Account());
+    unsigned int choice = 0;
+    std::string name = "";
+    std::cout << "Which account would you like to open?"<< std::endl;
+    std::cout << "1. Regular account" << std::endl;
+    std::cout << "2. Savings account" << std::endl;
+    std::cout << "3. Company account" << std::endl;
+    std::cout << std::endl;
+    do {
+        std::cout << "Choice: ";
+        std::cin >> choice;
+
+    } while (choice < 1 || choice >= NUM_OF_ACCOUNT_TYPES + 1);
+    std::cout << "Your account's custom name:" << std::endl;
+    std::cin >> name;
+    switch (choice - 1)
+    {
+    case REGULAR:
+        this->accounts.push_back(new RegularAccount(name));
+        break;
+    case SAVINGS:
+        this->accounts.push_back(new SavingsAccount(name));
+        break;
+    case COMPANY:
+        std::string company_name, company_nip;
+        std::cout << "Company name:" << std::endl;
+        std::cin >> company_name;
+        std::cout << "Company NIP: ";
+        std::cin >> company_nip;
+        this->accounts.push_back(new CompanyAccount(name, company_name, company_nip));
+        break;
+    }
 }
 
 void Customer::close_account()
 {
-    // TODO
+    unsigned int choice;
+    if (this->get_accounts().size() == 0)
+    {
+        std::cout << "No opened accounts" << std::endl;
+        return;
+    }
+    std::cout << std::endl << "Your accounts: " << std::endl;
+    this->list_accounts();
+    do {
+        std::cout << "Choice: ";
+        std::cin >> choice;
+        choice--;
+    } while (choice < 0 || choice >= this->get_accounts().size());
+    delete this->accounts[choice];
+    this->accounts.erase(this->accounts.begin() + choice);
+}
+
+void Customer::list_accounts()
+{
+    for (size_t i = 0; i < this->get_accounts().size(); i++)
+    {
+        std::cout << i + 1 << ". " << this->get_accounts()[i]->get_custom_name() << " " << this->get_accounts()[i]->get_type() << std::endl;
+    }
+    std::cout << std::endl;
 }
 
 bool Customer::verify_login(std::string input_login) const

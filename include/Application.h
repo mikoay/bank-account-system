@@ -21,16 +21,27 @@ enum account_options
     NUM_OF_ACCOUNT_OPTIONS
 };
 
+enum account_operations
+{
+    CHANGE_ACCOUNT = 0,
+    DEPOSIT,
+    WITHDRAW,
+    TRANSFER,
+    NUM_OF_ACCOUNT_OPERATIONS
+};
+
 class Application
 {
 private:
     std::vector<Customer*> customers;
     unsigned short int choice;
     Customer* current_user;
+    Account* selected_account;
 public:
     void run();
     void menu();
     void logIn();
     void signUp();
     void personalized();
+    void selectedAccount();
 };

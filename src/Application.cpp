@@ -10,6 +10,10 @@ void Application::run()
         while (this->current_user != nullptr)
         {
             this->personalized();
+            while (this->selected_account != nullptr)
+            {
+                this->selectedAccount();
+            }
         }
     }
     delete database;
@@ -103,7 +107,6 @@ void Application::signUp()
 
 void Application::personalized()
 {
-    unsigned int choice = 0;
     std::cout << "Hello " << this->current_user->get_name() << "!" << std::endl;
     std::cout << "0. Log out" << std::endl;
     std::cout << "1. Open new account" << std::endl;
@@ -128,18 +131,55 @@ void Application::personalized()
         this->current_user->close_account();
         break;
     case SELECT:
-        std::cout << std::endl << "Your accounts: " << std::endl;
         if (this->current_user->get_accounts().size() == 0)
         {
             std::cout << "No opened accounts" << std::endl;
         }
         else
         {
-            for (auto& acc : this->current_user->get_accounts())
-            {
-                std::cout << "Account" << std::endl;
-            }
+            std::cout << std::endl << "Your accounts: " << std::endl;
+            this->current_user->list_accounts();
+            do {
+                std::cout << "Choice: ";
+                std::cin >> choice;
+                choice--;
+            } while (choice < 0 || choice >= this->current_user->get_accounts().size());
+            this->selected_account = this->current_user->get_accounts()[choice];
+            this->selectedAccount();
         }
+        break;
+    }
+}
+
+void Application::selectedAccount()
+{
+    std::cout << "Hello " << this->current_user->get_name() << "!" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Account: " << this->selected_account->get_custom_name() << std::endl;
+    std::cout << "Type: " << this->selected_account->get_type() << std::endl;
+    std::cout << "Balance: " << this->selected_account->get_balance() << "$" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Operations:" << std::endl;
+    std::cout << "0. Change account" << std::endl;
+    std::cout << "1. Deposit" << std::endl;
+    std::cout << "2. Withdraw" << std::endl;
+    std::cout << "3. Transfer" << std::endl;
+    std::cout << std::endl;
+    do {
+        std::cout << "Choice: ";
+        std::cin >> choice;
+    } while (choice < 0 || choice >= NUM_OF_ACCOUNT_OPERATIONS);
+    switch (choice)
+    {
+    case CHANGE_ACCOUNT:
+        this->selected_account = nullptr;
+        return;
+        break;
+    case DEPOSIT:
+        break;
+    case WITHDRAW:
+        break;
+    case TRANSFER:
         break;
     }
 }
