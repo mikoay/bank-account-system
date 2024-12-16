@@ -1,8 +1,18 @@
 #pragma once
-#include "Database.h"
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <vector>
 #include "Customer.h"
+#include "Account.h"
+#include "Transaction.h"
+#include "utilities.h"
 
-constexpr auto DB_NAME = "bank.db";
+constexpr auto customers_file = "customers.dat";
+constexpr auto accounts_file = "accounts.dat";
+constexpr auto transactions_file = "transactions.dat";
+
+constexpr auto delimiter = ':';
 
 enum menu_options 
 {
@@ -37,6 +47,9 @@ private:
     unsigned short int choice;
     Customer* current_user;
     Account* selected_account;
+    void save_customers();
+    void save_accounts(std::vector<Account*> accounts);
+    void save_transactions(std::vector<Transaction*> transactions);
 public:
     void run();
     void menu();
@@ -44,4 +57,8 @@ public:
     void signUp();
     void personalized();
     void selectedAccount();
+    void save(std::vector<Customer*> customers, std::vector<Account*> accounts, std::vector<Transaction*> transactions);
+    void read_customers();
+    void read_accounts();
+    void read_transactions();
 };

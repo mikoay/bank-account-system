@@ -12,6 +12,7 @@ bank.db
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
+*.txt
 
 # User-specific files
 *.rsuser

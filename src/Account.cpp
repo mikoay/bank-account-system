@@ -33,17 +33,18 @@ std::string Account::get_custom_name()
 void Account::deposit(float amount)
 {
     if(amount>0)
-        this->balance+=amount;
+        this->balance += amount;
 }
 
 void Account::withdraw(float amount)
 {
     if(amount>0)
-        this->balance-=amount;
+        this->balance -= amount;
 }
 
 CompanyAccount::CompanyAccount(std::string input_n, std::string input_cn, std::string input_cnip)
 {
+    this->set_balance(0.0f);
     this->set_custom_name(input_n);
     this->company_name = input_cn;
     this->company_nip = input_cnip;

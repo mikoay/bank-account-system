@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include "Account.h"
+#include "utilities.h"
 
 class Customer
 {
@@ -35,6 +36,8 @@ public:
     std::string get_postal_code();
     std::string get_phone_number();
     std::string get_mail();
+    std::string get_login();
+    std::string get_password();
     std::vector<Account*> get_accounts();
     // CUSTOMER'S ACCOUNTS' OPERATIONS
     void open_account();

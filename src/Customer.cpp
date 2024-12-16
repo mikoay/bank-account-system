@@ -140,6 +140,16 @@ std::string Customer::get_mail()
     return this->mail;
 }
 
+std::string Customer::get_login()
+{
+    return this->login;
+}
+
+std::string Customer::get_password()
+{
+    return this->password;
+}
+
 std::vector<Account*> Customer::get_accounts()
 {
     return this->accounts;
@@ -153,21 +163,23 @@ void Customer::open_account()
     std::cout << "1. Regular account" << std::endl;
     std::cout << "2. Savings account" << std::endl;
     std::cout << "3. Company account" << std::endl;
-    std::cout << std::endl;
     do {
         std::cout << "Choice: ";
         std::cin >> choice;
 
     } while (choice < 1 || choice >= NUM_OF_ACCOUNT_TYPES + 1);
+    clear();
     std::cout << "Your account's custom name:" << std::endl;
     std::cin >> name;
     switch (choice - 1)
     {
     case REGULAR:
         this->accounts.push_back(new RegularAccount(name));
+        std::cout << "Successfully created regular account!" << std::endl;
         break;
     case SAVINGS:
         this->accounts.push_back(new SavingsAccount(name));
+        std::cout << "Successfully created savings account!" << std::endl;
         break;
     case COMPANY:
         std::string company_name, company_nip;
@@ -176,19 +188,24 @@ void Customer::open_account()
         std::cout << "Company NIP: ";
         std::cin >> company_nip;
         this->accounts.push_back(new CompanyAccount(name, company_name, company_nip));
+        std::cout << "Successfully created company account!" << std::endl;
         break;
     }
+    sleep(1);
+    clear();
 }
 
 void Customer::close_account()
 {
     unsigned int choice;
+    clear();
     if (this->get_accounts().size() == 0)
     {
         std::cout << "No opened accounts" << std::endl;
+        sleep(1);
         return;
     }
-    std::cout << std::endl << "Your accounts: " << std::endl;
+    std::cout << "Your accounts: " << std::endl;
     this->list_accounts();
     do {
         std::cout << "Choice: ";
@@ -203,7 +220,7 @@ void Customer::list_accounts()
 {
     for (size_t i = 0; i < this->get_accounts().size(); i++)
     {
-        std::cout << i + 1 << ". " << this->get_accounts()[i]->get_custom_name() << " " << this->get_accounts()[i]->get_type() << std::endl;
+        std::cout << i + 1 << ". " << this->get_accounts()[i]->get_custom_name() << " - " << this->get_accounts()[i]->get_type() << " Account" << std::endl;
     }
     std::cout << std::endl;
 }
