@@ -20,12 +20,12 @@ void Account::set_custom_name(std::string input_name)
     this->custom_name = input_name;
 }
 
-float Account::get_balance()
+float Account::get_balance() const
 {
     return this->balance;
 }
 
-std::string Account::get_custom_name()
+std::string Account::get_custom_name() const
 {
     return this->custom_name;
 }
@@ -41,8 +41,7 @@ void Account::deposit(float amount)
 
 void Account::deposit(float amount, std::string title)
 {
-    if (amount > 0)
-    {
+    if (amount > 0){
         this->balance += amount;
         this->transactions_history.push_back(new Transaction(amount, title));
     }
@@ -50,8 +49,7 @@ void Account::deposit(float amount, std::string title)
 
 bool Account::withdraw(float amount)
 {
-	if (amount <= 0)
-	{
+	if (amount <= 0){
 		return false;
 	}
     if (this->balance < amount) {

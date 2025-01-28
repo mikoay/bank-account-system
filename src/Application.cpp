@@ -1,57 +1,35 @@
 #include "Application.h"
 
-void Application::save_customers()
+Application::Application()
 {
-    std::fstream file(customers_file, std::ios::out | std::ios::binary);
-    for (auto& customer : this->customers)
-    {
-        file << customer->get_name() << delimiter;
-        file << customer->get_surname() << delimiter;
-        file << customer->get_date_of_birth() << delimiter;
-        file << customer->get_pesel() << delimiter;
-        file << customer->get_address() << delimiter;
-        file << customer->get_city() << delimiter;
-        file << customer->get_postal_code() << delimiter;
-        file << customer->get_phone_number() << delimiter;
-        file << customer->get_mail() << delimiter;
-        file << customer->get_login() << delimiter;
-        file << customer->get_password() << std::endl;
+    this->read_all();
+}
+
+Application::~Application()
+{
+    this->save_all();
+    for (auto& customer : this->customers) {
+        delete customer;
     }
-    file.close();
-}
-
-void Application::save_accounts(std::vector<Account*> accounts)
-{
-    std::fstream file(accounts_file, std::ios::out | std::ios::binary);
-    file.close();
-}
-
-void Application::save_transactions(std::vector<Transaction*> transactions)
-{
-    std::fstream file(transactions_file, std::ios::out | std::ios::binary);
-    file.close();
+    this->customers.clear();
+    this->current_user = nullptr;
+    this->selected_account = nullptr;
 }
 
 void Application::run()
 {
-    this->read_customers();
-    //this->customers.push_back(new Customer("Mikolaj", "Dlugolecki", "16-02-2003", "03221606235", "Rajgrod 8a", "Mrocza", "89-115", "698960087", "mikolaj.dlug@gmail.com", "mikolaj1602", "test"));
-    while (true)
-    {
-        this->menu();
-        while (this->current_user != nullptr)
-        {
-            this->personalized();
-            while (this->selected_account != nullptr)
-            {
-                this->selectedAccount();
+    while (true){
+        this->main_menu();
+        while (this->current_user != nullptr){
+            this->logged_user();
+            while (this->selected_account != nullptr){
+                this->logged_account();
             }
         }
     }
-    this->save_customers();
 }
 
-void Application::menu()
+void Application::main_menu()
 {
     clear();
     for (auto& customer : this->customers)
@@ -68,7 +46,7 @@ void Application::menu()
     {
         std::cout << "Choice: ";
         std::cin >> this->choice;
-    } while (this->choice < 0 || this->choice >=NUM_OF_MENU_OPTIONS);
+    } while (this->choice < 0 || this->choice >= NUM_OF_MENU_OPTIONS);
     clear();
     switch (this->choice)
     {
@@ -79,15 +57,15 @@ void Application::menu()
         exit(0);
         break;
     case LOG_IN:
-        this->logIn();
+        this->log_in();
         break;
     case SIGN_UP:
-        this->signUp();
+        this->sign_up();
         break;
     }
 }
 
-void Application::logIn()
+void Application::log_in()
 {
     std::string input_l, input_p;
     bool logged = false;
@@ -120,39 +98,50 @@ void Application::logIn()
     }
 }
 
-void Application::signUp()
+void Application::sign_up()
 {
     clear();
     std::string l, p, n, s, d, ps, a, c, pc, pn, m;
     std::cout << "Your login: ";
-    std::cin >> l;
+	while (std::getchar() != '\n');
+	std::getline(std::cin, l);
     std::cout << "Your password: ";
-    std::cin >> p;
+    while (std::getchar() != '\n');
+    std::getline(std::cin, p);
     std::cout << "Your name: ";
-    std::cin >> n;
+    while (std::getchar() != '\n');
+    std::getline(std::cin, n);
     std::cout << "Your surname: ";
-    std::cin >> s;
+    while (std::getchar() != '\n');
+    std::getline(std::cin, s);
     std::cout << "Your date of birth (DD-MM-YYYY): ";
-    std::cin >> d;
+    while (std::getchar() != '\n');
+    std::getline(std::cin, d);
     std::cout << "Your PESEL: ";
-    std::cin >> ps;
+    while (std::getchar() != '\n');
+    std::getline(std::cin, ps);
     std::cout << "Your address: ";
-    std::cin >> a;
+    while (std::getchar() != '\n');
+    std::getline(std::cin, a);
     std::cout << "Your city: ";
-    std::cin >> c;
+    while (std::getchar() != '\n');
+    std::getline(std::cin, c);
     std::cout << "Your postal code (XX-XXX): ";
-    std::cin >> pc;
+    while (std::getchar() != '\n');
+    std::getline(std::cin, pc);
     std::cout << "Your phone number: ";
-    std::cin >> pn;
+    while (std::getchar() != '\n');
+    std::getline(std::cin, pn);
     std::cout << "Your mail: ";
-    std::cin >> m;
+    while (std::getchar() != '\n');
+    std::getline(std::cin, m);
     this->customers.push_back(new Customer(n, s, d, ps, a, c, pc, pn, m, l, p));
     std::cout << "Successfully created account!" << std::endl;
     sleep(1);
     clear();
 }
 
-void Application::personalized()
+void Application::logged_user()
 {
     clear();
     std::cout << "Hello " << this->current_user->get_name() << "!" << std::endl;
@@ -161,7 +150,7 @@ void Application::personalized()
     std::cout << "2. Close accout" << std::endl;
     std::cout << "3. Select account" << std::endl;
     std::cout << std::endl;
-    do 
+    do
     {
         std::cout << "Choice: ";
         std::cin >> choice;
@@ -196,14 +185,14 @@ void Application::personalized()
                 choice--;
             } while (choice < 0 || choice >= this->current_user->get_accounts().size());
             this->selected_account = this->current_user->get_accounts()[choice];
-            this->selectedAccount();
+            this->logged_account();
         }
         clear();
         break;
     }
 }
 
-void Application::selectedAccount()
+void Application::logged_account()
 {
     float amount = 0;
     int tmp = 0;
@@ -232,24 +221,37 @@ void Application::selectedAccount()
         return;
         break;
     case DEPOSIT:
-        std::cout << "How much money would you like to deposit? ";
-        std::cin >> amount;
-        this->selected_account->deposit(amount);
-        std::cout << std::endl << "Successfully deposited " << amount << "$ to your account!" << std::endl;
-        sleep(1);
+        this->deposit();
         break;
     case WITHDRAW:
-        std::cout << "How much money would you like to withdraw? ";
-        std::cin >> amount;
-        this->selected_account->withdraw(amount);
-        std::cout << std::endl << "Successfully withdrawed " << amount << "$ from your account!" << std::endl;
-        sleep(1);
+        this->withdraw();
         break;
     case TRANSFER:
-		this->transfer();
+        this->transfer();
         break;
     }
     clear();
+}
+
+void Application::deposit()
+{
+    float amount;
+    std::cout << "How much money would you like to deposit? ";
+    std::cin >> amount;
+    this->selected_account->deposit(amount);
+    std::cout << std::endl << "Successfully deposited " << amount << "$ to your account!" << std::endl;
+    sleep(1);
+}
+
+void Application::withdraw()
+{
+    float amount;
+    std::cout << "How much money would you like to withdraw? ";
+    std::cin >> amount;
+    if (this->selected_account->withdraw(amount)) {
+        std::cout << std::endl << "Successfully withdrawed " << amount << "$ from your account!" << std::endl;
+    }
+    sleep(1);
 }
 
 void Application::transfer()
@@ -272,12 +274,12 @@ void Application::transfer()
         std::cin >> choice;
     } while ((choice - 1 < 0 || choice - 1 >= this->customers.size()) && choice - 1 != current_user_index);
     desired_user_index = choice - 1;
-	if (this->customers[desired_user_index]->get_accounts().size() == 0)
-	{
-		std::cout << "Selected user has no opened accounts" << std::endl;
-		sleep(1);
-		return;
-	}
+    if (this->customers[desired_user_index]->get_accounts().size() == 0)
+    {
+        std::cout << "Selected user has no opened accounts" << std::endl;
+        sleep(1);
+        return;
+    }
     std::cout << "To which account do you want to transfer money?" << std::endl;
     this->customers[desired_user_index]->list_accounts();
     do
@@ -303,18 +305,16 @@ void Application::transfer()
     sleep(2);
 }
 
-void Application::save(std::vector<Customer*> customers, std::vector<Account*> accounts, std::vector<Transaction*> transactions)
+void Application::read_all()
 {
-    this->save_customers();
-    this->save_accounts(accounts);
-    this->save_transactions(transactions);
+    this->read_customers();
 }
 
 void Application::read_customers()
 {
     std::vector<Customer*> c;
     std::vector<std::string> data;
-    std::string line = "", s="";
+    std::string line = "", s = "";
     std::fstream file(customers_file, std::ios::in | std::ios::binary);
     while (std::getline(file, line))
     {
@@ -341,6 +341,45 @@ void Application::read_accounts()
 void Application::read_transactions()
 {
     std::fstream file(transactions_file, std::ios::in | std::ios::binary);
-	// TODO
+    // TODO
+    file.close();
+}
+
+void Application::save_all()
+{
+    this->save_customers();
+}
+
+void Application::save_customers()
+{
+    std::fstream file(customers_file, std::ios::out | std::ios::binary);
+    for (auto& customer : this->customers)
+    {
+        file << customer->get_name() << delimiter;
+        file << customer->get_surname() << delimiter;
+        file << customer->get_date_of_birth() << delimiter;
+        file << customer->get_pesel() << delimiter;
+        file << customer->get_address() << delimiter;
+        file << customer->get_city() << delimiter;
+        file << customer->get_postal_code() << delimiter;
+        file << customer->get_phone_number() << delimiter;
+        file << customer->get_mail() << delimiter;
+        file << customer->get_login() << delimiter;
+        file << customer->get_password() << std::endl;
+    }
+    file.close();
+}
+
+void Application::save_accounts()
+{
+    std::fstream file(accounts_file, std::ios::out | std::ios::binary);
+    // TODO
+    file.close();
+}
+
+void Application::save_transactions()
+{
+    std::fstream file(transactions_file, std::ios::out | std::ios::binary);
+    // TODO
     file.close();
 }

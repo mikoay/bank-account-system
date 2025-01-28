@@ -21,8 +21,8 @@ public:
     void set_balance(float new_balance);
     void set_custom_name(std::string input_name);
     // GETTERS
-    float get_balance();
-    std::string get_custom_name();
+    float get_balance() const;
+    std::string get_custom_name() const;
     // OTHER
     void deposit(float amount);
 	void deposit(float amount, std::string title);

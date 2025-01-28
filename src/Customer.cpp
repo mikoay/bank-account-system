@@ -1,9 +1,5 @@
 #include "Customer.h"
 
-Customer::Customer()
-{
-    // TODO
-}
 
 Customer::Customer(std::string input_name, std::string input_surname, std::string input_date_of_birth, std::string input_pesel, std::string input_address, std::string input_city, std::string input_postal_code, std::string input_phone_number, std::string input_mail)
 {
@@ -35,7 +31,10 @@ Customer::Customer(std::string input_name, std::string input_surname, std::strin
 
 Customer::~Customer()
 {
-    // TODO
+	for (auto& account : this->accounts){
+		delete account;
+	}
+	this->accounts.clear();
 }
 
 void Customer::set_name(std::string input_name)
@@ -95,62 +94,62 @@ void Customer::set_password(std::string input_password)
     this->password = input_password;
 }
 
-std::string Customer::get_name()
+std::string Customer::get_name() const
 {
     return this->name;
 }
 
-std::string Customer::get_surname()
+std::string Customer::get_surname() const
 {
     return this->surname;
 }
 
-std::string Customer::get_date_of_birth()
+std::string Customer::get_date_of_birth() const
 {
     return this->date_of_birth;
 }
 
-std::string Customer::get_pesel()
+std::string Customer::get_pesel() const
 {
     return this->pesel;
 }
 
-std::string Customer::get_address()
+std::string Customer::get_address() const
 {
     return this->address;
 }
 
-std::string Customer::get_city()
+std::string Customer::get_city() const
 {
     return this->city;
 }
 
-std::string Customer::get_postal_code()
+std::string Customer::get_postal_code() const
 {
     return this->postal_code;
 }
 
-std::string Customer::get_phone_number()
+std::string Customer::get_phone_number() const
 {
     return this->phone_number;
 }
 
-std::string Customer::get_mail()
+std::string Customer::get_mail() const
 {
     return this->mail;
 }
 
-std::string Customer::get_login()
+std::string Customer::get_login() const
 {
     return this->login;
 }
 
-std::string Customer::get_password()
+std::string Customer::get_password() const
 {
     return this->password;
 }
 
-std::vector<Account*> Customer::get_accounts()
+std::vector<Account*> Customer::get_accounts() const
 {
     return this->accounts;
 }
