@@ -206,6 +206,7 @@ void Application::personalized()
 void Application::selectedAccount()
 {
     float amount = 0;
+    int tmp = 0;
     clear();
     std::cout << "Hello " << this->current_user->get_name() << "!" << std::endl;
     std::cout << std::endl;
@@ -245,9 +246,61 @@ void Application::selectedAccount()
         sleep(1);
         break;
     case TRANSFER:
+		this->transfer();
         break;
     }
     clear();
+}
+
+void Application::transfer()
+{
+    float amount = 0;
+    int current_user_index = 0, desired_user_index = 0, choice = 0;
+    std::cout << "Who do you want to transfer money to? " << std::endl << std::endl;
+    for (int i = 0; i < this->customers.size(); i++)
+    {
+        if (this->customers[i] == this->current_user)
+        {
+            current_user_index = i;
+            continue;
+        }
+        std::cout << i + 1 << ". " << this->customers[i]->get_name() << " " << this->customers[i]->get_surname() << std::endl;
+    }
+    do
+    {
+        std::cout << "Choice: ";
+        std::cin >> choice;
+    } while ((choice - 1 < 0 || choice - 1 >= this->customers.size()) && choice - 1 != current_user_index);
+    desired_user_index = choice - 1;
+	if (this->customers[desired_user_index]->get_accounts().size() == 0)
+	{
+		std::cout << "Selected user has no opened accounts" << std::endl;
+		sleep(1);
+		return;
+	}
+    std::cout << "To which account do you want to transfer money?" << std::endl;
+    this->customers[desired_user_index]->list_accounts();
+    do
+    {
+        std::cout << "Choice: ";
+        std::cin >> choice;
+    } while ((choice - 1 < 0 || choice - 1 >= this->customers[desired_user_index]->get_accounts().size()));
+    std::string title = "";
+    std::cout << "What is the title of the transfer (leave blank for default title)?" << std::endl;
+    while (std::getchar() != '\n');
+    std::getline(std::cin, title);
+    if (title == "")
+    {
+        title = "Transfer";
+    }
+    std::cout << "How much money would you like to transfer? " << std::endl;
+    std::cin >> amount;
+    if (this->selected_account->withdraw(amount, title))
+    {
+        this->customers[desired_user_index]->get_accounts()[choice - 1]->deposit(amount, title);
+        std::cout << "Successfully transfered " << amount << "$ to " << this->customers[desired_user_index]->get_name() << " " << this->customers[desired_user_index]->get_surname() << "!" << std::endl;
+    }
+    sleep(2);
 }
 
 void Application::save(std::vector<Customer*> customers, std::vector<Account*> accounts, std::vector<Transaction*> transactions)
@@ -281,11 +334,13 @@ void Application::read_customers()
 void Application::read_accounts()
 {
     std::fstream file(accounts_file, std::ios::in | std::ios::binary);
+    // TODO
     file.close();
 }
 
 void Application::read_transactions()
 {
     std::fstream file(transactions_file, std::ios::in | std::ios::binary);
+	// TODO
     file.close();
 }

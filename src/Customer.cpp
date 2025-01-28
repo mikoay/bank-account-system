@@ -170,7 +170,8 @@ void Customer::open_account()
     } while (choice < 1 || choice >= NUM_OF_ACCOUNT_TYPES + 1);
     clear();
     std::cout << "Your account's custom name:" << std::endl;
-    std::cin >> name;
+	while (getchar() != '\n');
+	std::getline(std::cin, name);
     switch (choice - 1)
     {
     case REGULAR:

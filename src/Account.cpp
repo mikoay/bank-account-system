@@ -32,14 +32,50 @@ std::string Account::get_custom_name()
 
 void Account::deposit(float amount)
 {
-    if(amount>0)
+    if (amount > 0)
+    {
         this->balance += amount;
+		this->transactions_history.push_back(new Transaction(amount, "Deposit"));
+    }
 }
 
-void Account::withdraw(float amount)
+void Account::deposit(float amount, std::string title)
 {
-    if(amount>0)
-        this->balance -= amount;
+    if (amount > 0)
+    {
+        this->balance += amount;
+        this->transactions_history.push_back(new Transaction(amount, title));
+    }
+}
+
+bool Account::withdraw(float amount)
+{
+	if (amount <= 0)
+	{
+		return false;
+	}
+    if (this->balance < amount) {
+        std::cout << "Not enough money on your account!" << std::endl;
+        return false;
+    }
+    this->balance -= amount;
+    this->transactions_history.push_back(new Transaction(-amount, "Withdraw"));
+    return true;
+}
+
+bool Account::withdraw(float amount, std::string title)
+{
+    if (amount <= 0)
+    {
+        return false;
+    }
+    if (this->balance < amount) {
+        std::cout << "Not enough money on your account!" << std::endl;
+        return false;
+    }
+    this->balance -= amount;
+    this->transactions_history.push_back(new Transaction(-amount, title));
+    return true;
 }
 
 CompanyAccount::CompanyAccount(std::string input_n, std::string input_cn, std::string input_cnip)

@@ -13,6 +13,8 @@ bank.db
 *.vcxproj.filters
 *.vcxproj.user
 *.txt
+*.dat
+*.gitattributes
 
 # User-specific files
 *.rsuser
@@ -372,3 +374,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/customers.dat

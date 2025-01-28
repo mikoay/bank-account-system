@@ -3,7 +3,7 @@
 Transaction::Transaction(float amount)
 {
     this->amount=amount;
-    this->title="Przelew";
+    this->title="Transfer";
     //this->date=this->get_current_date();
 }
 

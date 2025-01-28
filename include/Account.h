@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include <vector>
+#include "Transaction.h"
 
 enum account_types
 {
@@ -23,11 +25,14 @@ public:
     std::string get_custom_name();
     // OTHER
     void deposit(float amount);
-    void withdraw(float amount);
+	void deposit(float amount, std::string title);
+    bool withdraw(float amount);
+	bool withdraw(float amount, std::string title);
     virtual std::string get_type() = 0;
 private:
     std::string custom_name;
     float balance;
+    std::vector<Transaction*> transactions_history;
 };
 
 class RegularAccount

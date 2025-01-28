@@ -2,7 +2,8 @@
 
 int main()
 {
-    Application *Instance=new Application;
-    Instance->run();
-    return 0;
+	Application *Instance = new Application;
+	Instance->run();
+	delete Instance;
+	return 0;
 }

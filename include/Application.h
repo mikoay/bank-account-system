@@ -7,6 +7,7 @@
 #include "Account.h"
 #include "Transaction.h"
 #include "utilities.h"
+#include <windows.h>
 
 constexpr auto customers_file = "customers.dat";
 constexpr auto accounts_file = "accounts.dat";
@@ -57,6 +58,7 @@ public:
     void signUp();
     void personalized();
     void selectedAccount();
+    void transfer();
     void save(std::vector<Customer*> customers, std::vector<Account*> accounts, std::vector<Transaction*> transactions);
     void read_customers();
     void read_accounts();
