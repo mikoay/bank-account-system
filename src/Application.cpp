@@ -32,12 +32,10 @@ void Application::run()
 void Application::main_menu()
 {
     clear();
-    for (auto& customer : this->customers)
-    {
-        std::cout << customer->get_name() << std::endl;
-    }
     std::cout << "==========BANKING SYSTEM==========" << std::endl;
-    std::cout << std::endl << "Welcome!" << std::endl << std::endl;
+    std::cout << std::endl;
+    std::cout << "Welcome!" << std::endl;
+    std::cout << std::endl;
     std::cout << "0. Exit" << std::endl;
     std::cout << "1. Log in" << std::endl;
     std::cout << "2. Sign up" << std::endl;
@@ -68,10 +66,11 @@ void Application::main_menu()
 void Application::log_in()
 {
     std::string input_l, input_p;
-    bool logged = false;
+    bool found_login = false;
     clear();
-    while (!logged)
+    while (true)
     {
+		found_login = false;
         std::cout << "Your login: ";
         std::cin >> input_l;
         std::cout << "Your password: ";
@@ -79,63 +78,186 @@ void Application::log_in()
         std::cout << std::endl;
         for (auto& c : this->customers)
         {
-            if (c->verify_login(input_l) && c->verify_password(input_p))
-            {
-                std::cout << "Success! You are now logged in as " << c->get_name() << " " << c->get_surname() << "!" << std::endl;
-                sleep(1);
-                clear();
-                this->current_user = c;
-                logged = true;
-                return;
-            }
-            else if (c->verify_login(input_l))
-            {
-                std::cout << "Incorrect password!" << std::endl;
-                break;
-            }
+			if (c->verify_passes(input_l, input_p) == 1)
+			{
+				clear();
+				std::cout << "Success! You are now logged in as " << c->get_name() << " " << c->get_surname() << "!" << std::endl;
+				sleep(1);
+				clear();
+				this->current_user = c;
+				return;
+			}
+			else if (c->verify_passes(input_l, input_p) == -1)
+			{
+				found_login = true;
+				std::cout << "Incorrect password!" << std::endl;
+				sleep(1);
+				clear();
+				break;
+			}
         }
-        std::cout << "Incorrect login!" << std::endl; //???
+        if (!found_login)
+        {
+            std::cout << "Incorrect login!" << std::endl;
+            sleep(1);
+            clear();
+        }
     }
 }
 
 void Application::sign_up()
 {
     clear();
+	char choice;
+	std::cout << "Are you from Poland? (Y/N): ";
     std::string l, p, n, s, d, ps, a, c, pc, pn, m;
-    std::cout << "Your login: ";
-	while (std::getchar() != '\n');
-	std::getline(std::cin, l);
-    std::cout << "Your password: ";
-    while (std::getchar() != '\n');
-    std::getline(std::cin, p);
-    std::cout << "Your name: ";
-    while (std::getchar() != '\n');
-    std::getline(std::cin, n);
-    std::cout << "Your surname: ";
-    while (std::getchar() != '\n');
-    std::getline(std::cin, s);
-    std::cout << "Your date of birth (DD-MM-YYYY): ";
-    while (std::getchar() != '\n');
-    std::getline(std::cin, d);
-    std::cout << "Your PESEL: ";
-    while (std::getchar() != '\n');
-    std::getline(std::cin, ps);
-    std::cout << "Your address: ";
-    while (std::getchar() != '\n');
-    std::getline(std::cin, a);
-    std::cout << "Your city: ";
-    while (std::getchar() != '\n');
-    std::getline(std::cin, c);
-    std::cout << "Your postal code (XX-XXX): ";
-    while (std::getchar() != '\n');
-    std::getline(std::cin, pc);
-    std::cout << "Your phone number: ";
-    while (std::getchar() != '\n');
-    std::getline(std::cin, pn);
-    std::cout << "Your mail: ";
-    while (std::getchar() != '\n');
-    std::getline(std::cin, m);
-    this->customers.push_back(new Customer(n, s, d, ps, a, c, pc, pn, m, l, p));
+    std::cin >> choice;
+    sleep(1);
+    clear();
+    if (choice == 'Y' || choice == 'y')
+    {
+        PolishCustomer* new_client = new PolishCustomer();
+        while (std::getchar() != '\n');
+        std::cout << "Your login: ";
+        std::getline(std::cin, l);
+        new_client->set_login(l);
+        std::cout << "Your password: ";
+        std::getline(std::cin, p);
+        new_client->set_password(p);
+        std::cout << "Your name: ";
+        std::getline(std::cin, n);
+        new_client->set_name(n);
+        std::cout << "Your surname: ";
+        std::getline(std::cin, s);
+        new_client->set_surname(s);
+        std::cout << "Your date of birth (DD-MM-YYYY): ";
+        std::getline(std::cin, d);
+        if (!new_client->set_date_of_birth(d))
+        {
+            std::cout << "Invalid date of birth!" << std::endl;
+			delete new_client;
+            sleep(1);
+            return;
+        }
+        std::cout << "Your PESEL: ";
+        std::getline(std::cin, ps);
+        if (!new_client->set_id(ps))
+        {
+            std::cout << "Invalid PESEL!" << std::endl;
+            delete new_client;
+            sleep(1);
+            return;
+        }
+        std::cout << "Your address: ";
+        std::getline(std::cin, a);
+        new_client->set_address(a);
+        std::cout << "Your postal code (XX-XXX): ";
+        std::getline(std::cin, pc);
+        if (!new_client->set_postal_code(pc))
+        {
+            std::cout << "Invalid postal code!" << std::endl;
+            delete new_client;
+            sleep(1);
+            return;
+        }
+        std::cout << "Your city: ";
+        std::getline(std::cin, c);
+        new_client->set_city(c);
+        std::cout << "Your phone number (+48 XXXXXXXXX): ";
+        std::getline(std::cin, pn);
+        if (!new_client->set_phone_number(pn))
+        {
+            std::cout << "Invalid phone number!" << std::endl;
+            delete new_client;
+            sleep(1);
+            return;
+        }
+        std::cout << "Your mail: ";
+        std::getline(std::cin, m);
+        if (!new_client->set_mail(m))
+        {
+            std::cout << "Invalid mail!" << std::endl;
+            delete new_client;
+            sleep(1);
+            return;
+        }
+        this->customers.push_back(new_client);
+    }
+    else if (choice == 'N' || choice == 'n')
+    {
+        ForeignCustomer* new_client = new ForeignCustomer();
+        while (std::getchar() != '\n');
+        std::cout << "Your login: ";
+        std::getline(std::cin, l);
+        new_client->set_login(l);
+        std::cout << "Your password: ";
+        std::getline(std::cin, p);
+        new_client->set_password(p);
+        std::cout << "Your name: ";
+        std::getline(std::cin, n);
+        new_client->set_name(n);
+        std::cout << "Your surname: ";
+        std::getline(std::cin, s);
+        new_client->set_surname(s);
+        std::cout << "Your date of birth (DD-MM-YYYY): ";
+        std::getline(std::cin, d);
+        if (!new_client->set_date_of_birth(d))
+        {
+            std::cout << "Invalid date of birth!" << std::endl;
+            delete new_client;
+            sleep(1);
+            return;
+        }
+        std::cout << "Your passport (LLDDDDDDD): ";
+        std::getline(std::cin, ps);
+        if (!new_client->set_id(ps))
+        {
+            std::cout << "Invalid passport!" << std::endl;
+			delete new_client;
+            sleep(1);
+            return;
+        }
+        std::cout << "Your address: ";
+        std::getline(std::cin, a);
+        new_client->set_address(a);
+        std::cout << "Your postal code (XX-XXX): ";
+        std::getline(std::cin, pc);
+        if (!new_client->set_postal_code(pc))
+        {
+            std::cout << "Invalid postal code!" << std::endl;
+			delete new_client;
+            sleep(1);
+            return;
+        }
+        std::cout << "Your city: ";
+        std::getline(std::cin, c);
+        new_client->set_city(c);
+        std::cout << "Your phone number (+XXXXXXXXXXX): ";
+        std::getline(std::cin, pn);
+        if (!new_client->set_phone_number(pn))
+        {
+            std::cout << "Invalid phone number!" << std::endl;
+            delete new_client;
+            sleep(1);
+            return;
+        }
+        std::cout << "Your mail: ";
+        std::getline(std::cin, m);
+        if (!new_client->set_mail(m))
+        {
+            std::cout << "Invalid mail!" << std::endl;
+            delete new_client;
+            sleep(1);
+            return;
+        }
+        this->customers.push_back(new_client);
+    }
+    else
+    {
+        std::cout << "Invalid choice!" << std::endl;
+        sleep(1);
+        return;
+    }
     std::cout << "Successfully created account!" << std::endl;
     sleep(1);
     clear();
@@ -145,10 +267,12 @@ void Application::logged_user()
 {
     clear();
     std::cout << "Hello " << this->current_user->get_name() << "!" << std::endl;
+    std::cout << std::endl;
     std::cout << "0. Log out" << std::endl;
     std::cout << "1. Open new account" << std::endl;
-    std::cout << "2. Close accout" << std::endl;
+    std::cout << "2. Close account" << std::endl;
     std::cout << "3. Select account" << std::endl;
+	std::cout << "4. About you" << std::endl;
     std::cout << std::endl;
     do
     {
@@ -189,6 +313,11 @@ void Application::logged_user()
         }
         clear();
         break;
+    case INFO:
+        this->current_user->info();
+        std::cout << std::endl;
+        pause();
+        break;
     }
 }
 
@@ -202,17 +331,35 @@ void Application::logged_account()
     std::cout << "Account: " << this->selected_account->get_custom_name() << std::endl;
     std::cout << "Type: " << this->selected_account->get_type() << std::endl;
     std::cout << "Balance: " << this->selected_account->get_balance() << "$" << std::endl;
+	if (this->selected_account->get_type() == "Savings")
+	{
+		std::cout << "Interest rate: " << dynamic_cast<SavingsAccount*>(this->selected_account)->interest_rate << " %" << std::endl;
+	}
     std::cout << std::endl;
     std::cout << "Operations:" << std::endl;
+    std::cout << std::endl;
     std::cout << "0. Change account" << std::endl;
     std::cout << "1. Deposit" << std::endl;
     std::cout << "2. Withdraw" << std::endl;
     std::cout << "3. Transfer" << std::endl;
-    std::cout << std::endl;
-    do {
-        std::cout << "Choice: ";
-        std::cin >> choice;
-    } while (choice < 0 || choice >= NUM_OF_ACCOUNT_OPERATIONS);
+	std::cout << "4. List transactions" << std::endl;
+	if (this->selected_account->get_type() == "Savings")
+	{
+		std::cout << "5. Calculate interest" << std::endl;
+        std::cout << std::endl;
+        do {
+            std::cout << "Choice: ";
+            std::cin >> choice;
+        } while (choice < 0 || choice >= NUM_OF_ACCOUNT_OPERATIONS);
+	}
+    else
+    {
+		std::cout << std::endl;
+        do {
+            std::cout << "Choice: ";
+            std::cin >> choice;
+        } while (choice < 0 || choice >= NUM_OF_ACCOUNT_OPERATIONS - 1);
+    }
     clear();
     switch (choice)
     {
@@ -229,6 +376,11 @@ void Application::logged_account()
     case TRANSFER:
         this->transfer();
         break;
+	case LIST_TRANSACTIONS:
+		this->selected_account->list_transactions();
+        break;
+	case CALCULATE_INTEREST:
+        this->calculate_interest();
     }
     clear();
 }
@@ -239,7 +391,9 @@ void Application::deposit()
     std::cout << "How much money would you like to deposit? ";
     std::cin >> amount;
     this->selected_account->deposit(amount);
-    std::cout << std::endl << "Successfully deposited " << amount << "$ to your account!" << std::endl;
+    sleep(1);
+    clear();
+    std::cout << "Successfully deposited " << amount << "$ to your account!" << std::endl;
     sleep(1);
 }
 
@@ -248,8 +402,10 @@ void Application::withdraw()
     float amount;
     std::cout << "How much money would you like to withdraw? ";
     std::cin >> amount;
+    sleep(1);
+    clear();
     if (this->selected_account->withdraw(amount)) {
-        std::cout << std::endl << "Successfully withdrawed " << amount << "$ from your account!" << std::endl;
+        std::cout << "Successfully withdrawed " << amount << "$ from your account!" << std::endl;
     }
     sleep(1);
 }
@@ -305,6 +461,19 @@ void Application::transfer()
     sleep(2);
 }
 
+void Application::calculate_interest()
+{
+    float interest_rate = dynamic_cast<SavingsAccount*>(this->selected_account)->interest_rate;
+	std::cout << "Your interest rate is: " << interest_rate << " %" << std::endl;
+    std::cout << "How many months would you like to calculate interest for? ";
+	int months;
+	std::cin >> months;
+	float interest = std::round(this->selected_account->get_balance() * interest_rate / 100 * months / 12 * 100.0f) / 100.0f;
+	std::cout << "After " << months << " months you will have " << this->selected_account->get_balance() + interest << "$ (interest: " << interest << "$)" << std::endl;
+    std::cout << std::endl;
+    pause();
+}
+
 void Application::read_all()
 {
     this->read_customers();
@@ -324,7 +493,38 @@ void Application::read_customers()
         {
             data.push_back(s);
         }
-        c.push_back(new Customer(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10]));
+        if (stoi(data[0]) == 0)
+        {
+			PolishCustomer* new_customer = new PolishCustomer();
+			new_customer->set_name(data[1]);
+			new_customer->set_surname(data[2]);
+			new_customer->set_date_of_birth(data[3]);
+			new_customer->set_id(data[4]);
+			new_customer->set_address(data[5]);
+			new_customer->set_city(data[6]);
+			new_customer->set_postal_code(data[7]);
+			new_customer->set_phone_number(data[8]);
+			new_customer->set_mail(data[9]);
+			new_customer->set_login(data[10]);
+			new_customer->set_password(data[11]);
+			c.push_back(new_customer);
+		}
+		else if (stoi(data[0]) == 1)
+        {
+            ForeignCustomer* new_customer = new ForeignCustomer();
+            new_customer->set_name(data[1]);
+            new_customer->set_surname(data[2]);
+            new_customer->set_date_of_birth(data[3]);
+            new_customer->set_id(data[4]);
+            new_customer->set_address(data[5]);
+            new_customer->set_city(data[6]);
+            new_customer->set_postal_code(data[7]);
+            new_customer->set_phone_number(data[8]);
+            new_customer->set_mail(data[9]);
+            new_customer->set_login(data[10]);
+            new_customer->set_password(data[11]);
+            c.push_back(new_customer);
+        }
     }
     file.close();
     this->customers = c;
@@ -355,10 +555,11 @@ void Application::save_customers()
     std::fstream file(customers_file, std::ios::out | std::ios::binary);
     for (auto& customer : this->customers)
     {
+        file << customer->type << delimiter;
         file << customer->get_name() << delimiter;
         file << customer->get_surname() << delimiter;
         file << customer->get_date_of_birth() << delimiter;
-        file << customer->get_pesel() << delimiter;
+		file << customer->get_id() << delimiter;
         file << customer->get_address() << delimiter;
         file << customer->get_city() << delimiter;
         file << customer->get_postal_code() << delimiter;
@@ -373,7 +574,27 @@ void Application::save_customers()
 void Application::save_accounts()
 {
     std::fstream file(accounts_file, std::ios::out | std::ios::binary);
-    // TODO
+    for (auto& customer : this->customers)
+    {
+        for (auto& account : customer->get_accounts())
+        {
+            file << customer->get_name() << delimiter;
+            file << customer->get_surname() << delimiter;
+            file << account->get_type() << delimiter;
+            file << account->get_custom_name() << delimiter;
+            file << account->get_balance();
+            if (account->get_type() == "Savings")
+            {
+                file << delimiter << dynamic_cast<SavingsAccount*>(account)->interest_rate;
+            }
+            if (account->get_type() == "Company")
+            {
+                file << delimiter << dynamic_cast<CompanyAccount*>(account)->company_name;
+                file << delimiter << dynamic_cast<CompanyAccount*>(account)->company_nip;
+            }
+        }
+        file << std::endl;
+    }
     file.close();
 }
 

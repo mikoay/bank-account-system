@@ -1,6 +1,8 @@
 #pragma once
+
 #include <iostream>
 #include <vector>
+
 #include "Transaction.h"
 
 enum account_types
@@ -28,6 +30,7 @@ public:
 	void deposit(float amount, std::string title);
     bool withdraw(float amount);
 	bool withdraw(float amount, std::string title);
+	void list_transactions();
     virtual std::string get_type() = 0;
 private:
     std::string custom_name;
@@ -47,7 +50,8 @@ class SavingsAccount
     : public Account
 {
 public:
-    using Account::Account;
+	SavingsAccount();
+	SavingsAccount(std::string input_name);
     float interest_rate;
     std::string get_type();
 };

@@ -31,6 +31,7 @@ enum logged_user_options
     OPEN,
     CLOSE,
     SELECT,
+    INFO,
     NUM_OF_ACCOUNT_OPTIONS
 };
 
@@ -40,6 +41,8 @@ enum logged_account_options
     DEPOSIT,
     WITHDRAW,
     TRANSFER,
+    LIST_TRANSACTIONS,
+	CALCULATE_INTEREST,
     NUM_OF_ACCOUNT_OPERATIONS
 };
 
@@ -62,6 +65,7 @@ private:
     void deposit();
     void withdraw();
     void transfer();
+	void calculate_interest();
     void read_all();
     void read_customers();
     void read_accounts(); // TODO

@@ -41,7 +41,8 @@ void Account::deposit(float amount)
 
 void Account::deposit(float amount, std::string title)
 {
-    if (amount > 0){
+    if (amount > 0)
+    {
         this->balance += amount;
         this->transactions_history.push_back(new Transaction(amount, title));
     }
@@ -76,6 +77,22 @@ bool Account::withdraw(float amount, std::string title)
     return true;
 }
 
+void Account::list_transactions()
+{
+	if (this->transactions_history.size() == 0)
+	{
+		std::cout << "No transactions made yet!" << std::endl;
+        sleep(1);
+		return;
+	}
+	for (auto& transaction : this->transactions_history)
+	{
+		std::cout << "DATE: " << transaction->get_date() << " TITLE: \"" << transaction->get_title() << "\" AMOUNT: " << transaction->get_amount() << "$" << std::endl;
+	}
+    std::cout << std::endl;
+    pause();
+}
+
 CompanyAccount::CompanyAccount(std::string input_n, std::string input_cn, std::string input_cnip)
 {
     this->set_balance(0.0f);
@@ -92,6 +109,17 @@ std::string CompanyAccount::get_type()
 std::string RegularAccount::get_type()
 {
     return "Regular";
+}
+
+SavingsAccount::SavingsAccount()
+{
+    this->interest_rate = get_random_float(1.5, 5.5);
+}
+
+SavingsAccount::SavingsAccount(std::string input_name)
+{
+    this->interest_rate = get_random_float(1.5, 5.5);
+	this->set_custom_name(input_name);
 }
 
 std::string SavingsAccount::get_type()
