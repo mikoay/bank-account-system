@@ -200,6 +200,11 @@ void Customer::list_accounts() const
     std::cout << std::endl;
 }
 
+void Customer::load_account(Account* account)
+{
+	this->accounts.push_back(account);
+}
+
 int Customer::verify_passes(std::string input_login, std::string input_password) const
 {
     if (this->verify_login(input_login) && this->verify_password(input_password))

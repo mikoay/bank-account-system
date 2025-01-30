@@ -18,6 +18,7 @@ class Account
 public:
     // CONSTRUCTORS 
     Account();
+    Account(std::string input_name, float input_balance);
     Account(std::string input_name);
     // SETTERS
     void set_balance(float new_balance);
@@ -25,6 +26,7 @@ public:
     // GETTERS
     float get_balance() const;
     std::string get_custom_name() const;
+	std::vector<Transaction*> get_transactions() const;
     // OTHER
     void deposit(float amount);
 	void deposit(float amount, std::string title);
@@ -52,6 +54,7 @@ class SavingsAccount
 public:
 	SavingsAccount();
 	SavingsAccount(std::string input_name);
+	SavingsAccount(std::string input_name, float input_balance, float input_interest_rate);
     float interest_rate;
     std::string get_type();
 };
@@ -61,6 +64,7 @@ class CompanyAccount
 {
 public:
     CompanyAccount(std::string input_n, std::string input_cn, std::string cnip);
+	CompanyAccount(std::string input_n, float input_balance, std::string input_cn, std::string cnip);
     std::string company_name;
     std::string company_nip;    
     std::string get_type();

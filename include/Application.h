@@ -57,7 +57,7 @@ private:
     unsigned short int choice;
     Customer* current_user;
     Account* selected_account;
-    void main_menu();
+    bool main_menu();
     void log_in();
     void sign_up();
     void logged_user();
@@ -68,10 +68,10 @@ private:
 	void calculate_interest();
     void read_all();
     void read_customers();
-    void read_accounts(); // TODO
+    void read_accounts();
 	void read_transactions(); // TODO
     void save_all();
     void save_customers();
-	void save_accounts(); // TODO
+    void save_accounts();
 	void save_transactions(); // TODO
 };

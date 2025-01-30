@@ -45,6 +45,7 @@ public:
     void open_account();
     void close_account();
     void list_accounts() const;
+	void load_account(Account* account);
     // OTHER
 	int verify_passes(std::string input_login, std::string input_password) const;
 	virtual void info() const = 0;

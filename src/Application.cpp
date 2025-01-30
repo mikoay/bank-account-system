@@ -8,18 +8,27 @@ Application::Application()
 Application::~Application()
 {
     this->save_all();
-    for (auto& customer : this->customers) {
-        delete customer;
-    }
+	for (auto& c : this->customers)
+	{
+		for (auto& a : c->get_accounts())
+		{
+			for (auto& t : a->get_transactions())
+			{
+				delete t;
+			}
+            a->get_transactions().clear();
+			delete a;
+		}
+		c->get_accounts().clear();
+	}
     this->customers.clear();
-    this->current_user = nullptr;
-    this->selected_account = nullptr;
 }
 
 void Application::run()
 {
-    while (true){
-        this->main_menu();
+    bool running = true;
+    while (running){
+        running = this->main_menu();
         while (this->current_user != nullptr){
             this->logged_user();
             while (this->selected_account != nullptr){
@@ -29,7 +38,7 @@ void Application::run()
     }
 }
 
-void Application::main_menu()
+bool Application::main_menu()
 {
     clear();
     std::cout << "==========BANKING SYSTEM==========" << std::endl;
@@ -49,10 +58,9 @@ void Application::main_menu()
     switch (this->choice)
     {
     case EXIT:
-        this->save_customers();
         std::cout << "Bye!" << std::endl;
         sleep(1);
-        exit(0);
+        return false;
         break;
     case LOG_IN:
         this->log_in();
@@ -335,6 +343,11 @@ void Application::logged_account()
 	{
 		std::cout << "Interest rate: " << dynamic_cast<SavingsAccount*>(this->selected_account)->interest_rate << " %" << std::endl;
 	}
+    else if (this->selected_account->get_type() == "Company")
+    {
+		std::cout << "Company name: " << dynamic_cast<CompanyAccount*>(this->selected_account)->company_name << std::endl;
+		std::cout << "Company NIP: " << dynamic_cast<CompanyAccount*>(this->selected_account)->company_nip << std::endl;
+    }
     std::cout << std::endl;
     std::cout << "Operations:" << std::endl;
     std::cout << std::endl;
@@ -477,6 +490,8 @@ void Application::calculate_interest()
 void Application::read_all()
 {
     this->read_customers();
+    this->read_accounts();
+	//this->read_transactions();
 }
 
 void Application::read_customers()
@@ -534,7 +549,39 @@ void Application::read_customers()
 void Application::read_accounts()
 {
     std::fstream file(accounts_file, std::ios::in | std::ios::binary);
-    // TODO
+    std::vector<std::string> data;
+    std::string line = "", s = "";
+	std::string owner_name = "", owner_surname = "";
+    while (std::getline(file, line))
+    {
+        data.clear();
+        std::stringstream ss(line);
+        while (std::getline(ss, s, delimiter))
+        {
+            data.push_back(s);
+        }
+		owner_name = data[1];
+		owner_surname = data[2];
+		for (auto& customer : this->customers)
+		{
+			if (customer->get_name() == owner_name && customer->get_surname() == owner_surname)
+			{
+                if (data[0] == "Regular")
+                {
+                    customer->load_account(new RegularAccount(data[3], stof(data[4])));
+                }
+                else if (data[0] == "Savings")
+                {
+                    customer->load_account(new SavingsAccount(data[3], stof(data[4]), stof(data[5])));
+                }
+                else if (data[0] == "Company")
+                {
+                    customer->load_account(new CompanyAccount(data[3], stof(data[4]), data[5], data[6]));
+                }
+				break;
+			}
+		}
+    }
     file.close();
 }
 
@@ -548,6 +595,8 @@ void Application::read_transactions()
 void Application::save_all()
 {
     this->save_customers();
+    this->save_accounts();
+    this->save_transactions();
 }
 
 void Application::save_customers()
@@ -578,9 +627,9 @@ void Application::save_accounts()
     {
         for (auto& account : customer->get_accounts())
         {
+            file << account->get_type() << delimiter;
             file << customer->get_name() << delimiter;
             file << customer->get_surname() << delimiter;
-            file << account->get_type() << delimiter;
             file << account->get_custom_name() << delimiter;
             file << account->get_balance();
             if (account->get_type() == "Savings")
@@ -592,8 +641,8 @@ void Application::save_accounts()
                 file << delimiter << dynamic_cast<CompanyAccount*>(account)->company_name;
                 file << delimiter << dynamic_cast<CompanyAccount*>(account)->company_nip;
             }
+            file << std::endl;
         }
-        file << std::endl;
     }
     file.close();
 }

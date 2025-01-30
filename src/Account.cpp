@@ -4,6 +4,12 @@ Account::Account()
 {
 }
 
+Account::Account(std::string input_name, float input_balance)
+{
+	this->balance = input_balance;
+	this->set_custom_name(input_name);
+}
+
 Account::Account(std::string input_name)
 {
     this->balance = 0.0f;
@@ -28,6 +34,11 @@ float Account::get_balance() const
 std::string Account::get_custom_name() const
 {
     return this->custom_name;
+}
+
+std::vector<Transaction*> Account::get_transactions() const
+{
+    return this->transactions_history;
 }
 
 void Account::deposit(float amount)
@@ -101,6 +112,14 @@ CompanyAccount::CompanyAccount(std::string input_n, std::string input_cn, std::s
     this->company_nip = input_cnip;
 }
 
+CompanyAccount::CompanyAccount(std::string input_n, float input_balance, std::string input_cn, std::string cnip)
+{
+	this->set_custom_name(input_n);
+	this->set_balance(input_balance);
+	this->company_name = input_cn;
+	this->company_nip = cnip;
+}
+
 std::string CompanyAccount::get_type()
 {
     return "Company";
@@ -120,6 +139,13 @@ SavingsAccount::SavingsAccount(std::string input_name)
 {
     this->interest_rate = get_random_float(1.5, 5.5);
 	this->set_custom_name(input_name);
+}
+
+SavingsAccount::SavingsAccount(std::string input_name, float input_balance, float input_interest_rate)
+{
+	this->set_custom_name(input_name);
+	this->set_balance(input_balance);
+	this->interest_rate = input_interest_rate;
 }
 
 std::string SavingsAccount::get_type()
