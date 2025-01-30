@@ -12,11 +12,8 @@ class Customer
 {
 public:
     int type;
-    // CONSTRUCTORS
     Customer();
-    // DESTRUCTOR
     ~Customer();
-    // SETTERS
     void set_name(std::string input_name);
     void set_surname(std::string input_surname);
     bool set_date_of_birth(std::string input_date_of_birth);
@@ -28,7 +25,6 @@ public:
     bool set_mail(std::string input_mail);
     void set_login(std::string input_login);
     void set_password(std::string input_password);
-    // GETTERS
     std::string get_name() const;
     std::string get_surname() const;
     std::string get_date_of_birth() const;
@@ -41,19 +37,15 @@ public:
     std::string get_login() const;
     std::string get_password() const;
     std::vector<Account*> get_accounts() const;
-    // CUSTOMER'S ACCOUNTS' OPERATIONS
     void open_account();
     void close_account();
     void list_accounts() const;
 	void load_account(Account* account);
-    // OTHER
 	int verify_passes(std::string input_login, std::string input_password) const;
 	virtual void info() const = 0;
 private:
-    // CUSTOMER PASSES
     std::string login;
     std::string password;
-    // CUSTOMER INFO
     std::string name;
     std::string surname;
 	std::string date_of_birth;
@@ -61,9 +53,7 @@ private:
 	std::string city;
 	std::string postal_code;
 	std::string mail;
-    // CUSTOMER ACCOUNTS
     std::vector<Account*> accounts;
-	// VERIFICATION
     bool verify_login(std::string input_login) const;
     bool verify_password(std::string input_password) const;
 };

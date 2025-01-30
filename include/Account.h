@@ -16,22 +16,19 @@ enum account_types
 class Account
 {
 public:
-    // CONSTRUCTORS 
     Account();
     Account(std::string input_name, float input_balance);
     Account(std::string input_name);
-    // SETTERS
     void set_balance(float new_balance);
     void set_custom_name(std::string input_name);
-    // GETTERS
     float get_balance() const;
     std::string get_custom_name() const;
 	std::vector<Transaction*> get_transactions() const;
-    // OTHER
     void deposit(float amount);
 	void deposit(float amount, std::string title);
     bool withdraw(float amount);
 	bool withdraw(float amount, std::string title);
+	void load_transaction(Transaction* transaction);
 	void list_transactions();
     virtual std::string get_type() = 0;
 private:

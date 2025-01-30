@@ -43,8 +43,7 @@ std::vector<Transaction*> Account::get_transactions() const
 
 void Account::deposit(float amount)
 {
-    if (amount > 0)
-    {
+    if (amount > 0){
         this->balance += amount;
 		this->transactions_history.push_back(new Transaction(amount, "Deposit"));
     }
@@ -52,8 +51,7 @@ void Account::deposit(float amount)
 
 void Account::deposit(float amount, std::string title)
 {
-    if (amount > 0)
-    {
+    if (amount > 0){
         this->balance += amount;
         this->transactions_history.push_back(new Transaction(amount, title));
     }
@@ -61,10 +59,9 @@ void Account::deposit(float amount, std::string title)
 
 bool Account::withdraw(float amount)
 {
-	if (amount <= 0){
+	if (amount <= 0)
 		return false;
-	}
-    if (this->balance < amount) {
+    if (this->balance < amount){
         std::cout << "Not enough money on your account!" << std::endl;
         return false;
     }
@@ -76,10 +73,8 @@ bool Account::withdraw(float amount)
 bool Account::withdraw(float amount, std::string title)
 {
     if (amount <= 0)
-    {
         return false;
-    }
-    if (this->balance < amount) {
+    if (this->balance < amount){
         std::cout << "Not enough money on your account!" << std::endl;
         return false;
     }
@@ -88,18 +83,20 @@ bool Account::withdraw(float amount, std::string title)
     return true;
 }
 
+void Account::load_transaction(Transaction* transaction)
+{
+	this->transactions_history.push_back(transaction);
+}
+
 void Account::list_transactions()
 {
-	if (this->transactions_history.size() == 0)
-	{
+	if (this->transactions_history.size() == 0){
 		std::cout << "No transactions made yet!" << std::endl;
         sleep(1);
 		return;
 	}
 	for (auto& transaction : this->transactions_history)
-	{
 		std::cout << "DATE: " << transaction->get_date() << " TITLE: \"" << transaction->get_title() << "\" AMOUNT: " << transaction->get_amount() << "$" << std::endl;
-	}
     std::cout << std::endl;
     pause();
 }

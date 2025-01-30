@@ -69,9 +69,9 @@ private:
     void read_all();
     void read_customers();
     void read_accounts();
-	void read_transactions(); // TODO
+	void read_transactions();
     void save_all();
     void save_customers();
     void save_accounts();
-	void save_transactions(); // TODO
+	void save_transactions();
 };

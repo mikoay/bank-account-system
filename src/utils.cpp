@@ -37,9 +37,7 @@ std::string get_current_date()
     localtime_r(&t, &timeStruct);
 #endif
     std::ostringstream oss;
-    oss << std::setw(2) << std::setfill('0') << timeStruct.tm_mday << "-"
-        << std::setw(2) << std::setfill('0') << (timeStruct.tm_mon + 1) << "-"
-        << (timeStruct.tm_year + 1900);
+    oss << std::setw(2) << std::setfill('0') << timeStruct.tm_mday << "-"<< std::setw(2) << std::setfill('0') << (timeStruct.tm_mon + 1) << "-"<< (timeStruct.tm_year + 1900);
     return oss.str();
 }
 
